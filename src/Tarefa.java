@@ -13,28 +13,49 @@ public class Tarefa {
         this.titulo = titulo;
         this.descricao = descricao;
         this.dataEntrega = dataEntrega;
-        this.status = Status.PENDENTE; // Padrão inicial
+        this.status = Status.PENDENTE;
     }
 
-    // Getters: Permitem que outras classes leiam os dados privados
+    // --- GETTERS E SETTERS ---
     public String getTitulo() { return titulo; }
     public String getDescricao() { return descricao; }
     public LocalDate getDataEntrega() { return dataEntrega; }
     public Status getStatus() { return status; }
 
-    // Setter: Permite alterar o status
-    public void setStatus(Status status) { this.status = status; }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-    // Lógica para verificar se o prazo expirou
+    // --- LÓGICA DE NEGÓCIO ---
+
     public boolean isVencida() {
-        // Retorna verdadeiro se a data for antes de hoje E não estiver concluída
-        return dataEntrega.isBefore(LocalDate.now()) && status != Status.CONCLUIDA;
+        return dataEntrega.isBefore(LocalDate.now()) && !isConcluida();
+    }
+
+    /**
+     * MELHORIA: Usa o método que criamos no Enum Status para centralizar a lógica.
+     */
+    public boolean isConcluida() {
+        return this.status.isFinalizado();
+    }
+
+    /**
+     * MELHORIA: Renomeado para seguir o padrão Java Time API e retornar LocalDate.
+     */
+    public LocalDate getDataVencimento() {
+        return this.dataEntrega;
     }
 
     @Override
     public String toString() {
-        String alerta = isVencida() ? " [ALERTA: PRAZO VENCIDO!] " : "";
-        return String.format("[%s]%s %s (Vence em: %s) - %s",
-                status, alerta, titulo, dataEntrega.format(fmt), descricao);
+        // Agora o status já traz sua própria cor e nome formatado
+        String alertaVencimento = isVencida() ? Cores.erro(" [!] VENCIDA ") : "";
+
+        return String.format("%s %s %s - %s (Prazo: %s)",
+                status, // O toString do Enum resolve a cor e o nome
+                alertaVencimento,
+                Cores.NEGRITO + titulo + Cores.RESET,
+                descricao,
+                dataEntrega.format(fmt));
     }
 }

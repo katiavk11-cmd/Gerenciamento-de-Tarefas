@@ -2,34 +2,40 @@ import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Optional;
 
 public class ConsoleInput {
-    private static Scanner scanner = new Scanner(System.in);
-    private static DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    // Definimos o Scanner como final para evitar reatribuição
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static String lerTexto(String mensagem) {
         System.out.print(mensagem);
-        return scanner.nextLine();
+        // Usamos Optional para garantir que nunca retornamos um valor nulo inesperado
+        return Optional.ofNullable(scanner.nextLine()).orElse("").trim();
     }
 
     public static int lerInteiro(String mensagem) {
-        System.out.print(mensagem);
-        while (!scanner.hasNextInt()) {
-            System.out.println("Erro: Digite um número inteiro.");
-            scanner.next();
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = scanner.nextLine();
+            try {
+                return Integer.parseInt(entrada);
+            } catch (NumberFormatException e) {
+                System.out.println(Cores.erro("Erro: Digite um número inteiro válido."));
+            }
         }
-        int valor = scanner.nextInt();
-        scanner.nextLine();
-        return valor;
     }
 
     public static LocalDate lerData(String mensagem) {
         while (true) {
+            System.out.print(mensagem);
+            String entrada = scanner.nextLine();
             try {
-                System.out.print(mensagem);
-                return LocalDate.parse(scanner.nextLine(), fmt);
+                // Parsing seguro com java.time
+                return LocalDate.parse(entrada, fmt);
             } catch (DateTimeParseException e) {
-                System.out.println("Formato inválido! Use dd/mm/aaaa");
+                System.out.println(Cores.erro("Formato inválido! Use o padrão dd/mm/aaaa (Ex: 25/12/2026)"));
             }
         }
     }

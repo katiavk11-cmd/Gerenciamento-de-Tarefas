@@ -1,5 +1,10 @@
-Estudar Java;Estudar POO;2026-01-14;EM_ANDAMENTO
-Visitar KLM;Levar novo catálago de Vendas;2026-01-20;PENDENTE
-Visitar MGM;Conhecer novo gerente de vendas;2026-01-17;PENDENTE
-Planilha Vendas;Atualizar preços da planilha de vendas;2026-01-25;EM_ANDAMENTO
-Dentista;Fazer tratamento de canal;2026-01-15;PENDENTE
+Estudar Java 2;Estudar STREAMS;2026-01-25;CONCLUIDA
+Atualizar página;Atualizar a página do projeto com um novo layout, mais moderno;2026-01-30;PENDENTE
+Comprar equipamentos;Comprar os novos equipamentos de informática;2026-01-22;CONCLUIDA
+Implementar Menu;Implementar menu principal;2026-02-03;PENDENTE
+Revisão fase 1;Revisar as implementações da fase 1 do projeto;2026-02-02;PENDENTE
+Reunião Equipe;Reunião fase final projeto;2026-01-30;PENDENTE
+Fechamento Projeto;Finalização das atividades;2026-02-04;PENDENTE
+Implementar melhorias;Implementar melhorias e atualizações;2026-01-28;PENDENTE
+Curso Java;Fazer certificação java;2026-03-25;PENDENTE
+Atualizar dados;Atualização de dados;2026-01-29;EM_ANDAMENTO

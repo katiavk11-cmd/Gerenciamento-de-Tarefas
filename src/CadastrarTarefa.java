@@ -1,38 +1,39 @@
 import java.util.List;
 import java.time.LocalDate;
+import java.util.Optional;
 
 public class CadastrarTarefa {
     public void executar(List<Tarefa> lista) {
+        System.out.println("\n--- " + Cores.AZUL + "NOVO CADASTRO" + Cores.RESET + " ---");
 
-        // 1. Validação do Título (Mínimo 5 letras)
-        String titulo = "";
-        while (titulo.trim().length() < 5) {
-            titulo = ConsoleInput.lerTexto("Título da tarefa: ");
+        String titulo = ConsoleInput.lerTexto("Título: ");
+        String descricao = ConsoleInput.lerTexto("Descrição: ");
 
-            if (titulo.trim().length() < 5) {
-                System.out.println("(!) Erro: Título inválido.");
-                System.out.println("Motivo: O nome deve ter pelo menos 5 caracteres reais.");
+        // Uso do Java Time API para garantir prazos consistentes
+        LocalDate prazoFinal = obterDataValida();
+
+        Tarefa nova = new Tarefa(titulo, descricao, prazoFinal);
+
+        // Adição segura à lista
+        Optional.ofNullable(nova).ifPresent(lista::add);
+
+        System.out.println(Cores.sucesso(">>> Tarefa cadastrada com sucesso!"));
+    }
+
+    /**
+     * Centraliza a lógica de validação de data usando as melhores práticas do java.time
+     */
+    private LocalDate obterDataValida() {
+        while (true) {
+            LocalDate dataDigitada = ConsoleInput.lerData("Prazo de entrega (dd/mm/aaaa): ");
+            LocalDate hoje = LocalDate.now();
+
+            // Validação semântica clara com isBefore
+            if (dataDigitada.isBefore(hoje)) {
+                System.out.println(Cores.erro("Erro: A data limite (" + dataDigitada + ") não pode ser anterior a hoje (" + hoje + ")!"));
+                continue;
             }
+            return dataDigitada;
         }
-
-        // 2. Validação da Descrição (Não pode ficar vazia)
-        String descricao = "";
-        while (descricao.trim().isEmpty()) {
-            descricao = ConsoleInput.lerTexto("Descrição da tarefa: ");
-
-            if (descricao.trim().isEmpty()) {
-                System.out.println("(!) Erro: A descrição não pode ficar em branco.");
-                System.out.println("Motivo: É necessário detalhar o que deve ser feito.");
-            }
-        }
-
-        // 3. Coleta da Data (Já validada no ConsoleInput)
-        LocalDate data = ConsoleInput.lerData("Data de entrega (dd/mm/aaaa): ");
-
-        // Criação e armazenamento
-        Tarefa nova = new Tarefa(titulo, descricao, data);
-        lista.add(nova);
-
-        System.out.println("\n[OK] Tarefa '" + titulo + "' cadastrada com sucesso!");
     }
 }

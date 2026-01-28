@@ -1,32 +1,29 @@
-import java.util.List;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AvisosProximos {
 
-    public void verificarVencimentos(List<Tarefa> lista) {
+    public void verificarVencimentos(List<Tarefa> tarefas) {
         LocalDate hoje = LocalDate.now();
         LocalDate amanha = hoje.plusDays(1);
-        boolean temAviso = false;
 
-        System.out.println("\n>>> [RESUMO DE ALERTAS]");
+        // Uso de Streams para filtrar tarefas que vencem exatamente amanhã e não estão concluídas
+        List<Tarefa> tarefasAmanha = tarefas.stream()
+                .filter(t -> !t.isConcluida())
+                .filter(t -> t.getDataVencimento().equals(amanha))
+                .collect(Collectors.toList());
 
-        for (Tarefa t : lista) {
-            // 1. Verifica se já venceu e não está concluída
-            if (t.isVencida()) {
-                System.out.println(" [!] VENCIDA: " + t.getTitulo() + " (Prazo: " + t.getDataEntrega() + ")");
-                temAviso = true;
-            }
-            // 2. Verifica se vence amanhã e não está concluída
-            else if (t.getDataEntrega().equals(amanha) && t.getStatus() != Status.CONCLUIDA) {
-                System.out.println(" [>] AMANHÃ: " + t.getTitulo());
-                temAviso = true;
-            }
-        } // Fim do for
+        if (!tarefasAmanha.isEmpty()) {
+            System.out.println("\n" + Cores.AMARELO + "--- PAINEL DE ATENÇÃO ---" + Cores.RESET);
 
-        if (!temAviso) {
-            System.out.println(" [v] Tudo em dia! Nenhuma tarefa atrasada ou para amanhã.");
+            tarefasAmanha.forEach(t -> {
+                // Alteração solicitada: "ATENÇÃO" no lugar de "PRÓXIMA"
+                System.out.println(Cores.VERMELHO + " [!] ATENÇÃO: " + Cores.RESET +
+                        t.getTitulo() + Cores.AMARELO + " (Vence amanhã!)" + Cores.RESET);
+            });
+
+            System.out.println(Cores.AMARELO + "-------------------------" + Cores.RESET);
         }
-
-        System.out.println("------------------------------------------");
-    } // Fim do método
-} // Fim da classe - ESTA CHAVE RESOLVE O ERRO 'REACHED END OF FILE'
+    }
+}
